@@ -17,7 +17,7 @@ public class ConsoleReporter extends Reporter {
     protected void sendMetricPoint(String metricName, double value, String[] tags) {
         String tagString = "[" + Joiner.on(",").join(tags) + "]";
         //System.out.println(metricName + tagString + " - " + System.currentTimeMillis() / 1000 + " = " + value);
-        System.out.println("SET " + metricName +  " = " + value);
+        System.out.println("SET " + metricName.replace("_","") +  " = " + String.format("%10f", (float)value));
 
         HashMap<String, Object> m = new HashMap<String, Object>();
         m.put("name", metricName);
@@ -40,7 +40,7 @@ public class ConsoleReporter extends Reporter {
         if (tags != null && tags.length > 0) {
             tagString = "[" + Joiner.on(",").join(tags) + "]";
         }
-        System.out.println(checkName + tagString + " - " + System.currentTimeMillis() / 1000 + " = " + status);
+        //System.out.println(checkName + tagString + " - " + System.currentTimeMillis() / 1000 + " = " + status);
 
         HashMap<String, Object> sc = new HashMap<String, Object>();
         sc.put("name", checkName);
