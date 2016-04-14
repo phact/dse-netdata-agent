@@ -247,7 +247,22 @@ public class Instance {
                             this.matchingAttributes.add(jmxAttribute);
 
                             //CHART definition, chart per bean.
-                            System.out.println("CHART cassandra."+ beanName.getKeyProperty("type").toLowerCase()+ "." +beanName.getKeyProperty("scope").toLowerCase() + "-cassandra." + beanName.getKeyProperty("name").toLowerCase()+ "." +jmxAttribute.getAttribute().getName().toLowerCase()+ " " + beanName.getKeyProperty("scope").toLowerCase() + "." +beanName.getKeyProperty("name").toLowerCase()+  " cassandra."+ beanName.getKeyProperty("name").toLowerCase()+ "." +jmxAttribute.getAttribute().getName().toLowerCase()+ " " +attributeType + " cassandra."+ beanName.getKeyProperty("type").toLowerCase()+ "." +beanName.getKeyProperty("scope").toLowerCase() +  " \"DataStax Enterprise\"");
+                            //System.out.println("CHART cassandra."+ beanName.getKeyProperty("type").toLowerCase()+ "." +beanName.getKeyProperty("scope").toLowerCase() + "-cassandra." + beanName.getKeyProperty("name").toLowerCase()+ "." +jmxAttribute.getAttribute().getName().toLowerCase()+ " " + beanName.getKeyProperty("scope").toLowerCase() + "." +beanName.getKeyProperty("name").toLowerCase()+  " cassandra."+ beanName.getKeyProperty("name").toLowerCase()+ "." +jmxAttribute.getAttribute().getName().toLowerCase()+ " " +attributeType + " cassandra."+ beanName.getKeyProperty("type").toLowerCase()+ "." +beanName.getKeyProperty("scope").toLowerCase() +  " \"DataStax Enterprise\"");
+                            System.out.println("CHART cassandra."+ beanName.getKeyProperty("type").toLowerCase()+ "." +
+                                    beanName.getKeyProperty("scope").toLowerCase() +
+                                    "-cassandra." +
+                                        beanName.getKeyProperty("name").toLowerCase()+ "." +
+                                        jmxAttribute.getAttribute().getName().toLowerCase()+
+                                    " "+  beanName.getKeyProperty("type").toLowerCase()+ "." +
+                                        beanName.getKeyProperty("scope").toLowerCase() + "." +
+                                        beanName.getKeyProperty("name").toLowerCase()+ "." +
+                                        jmxAttribute.getAttribute().getName().toLowerCase()  +
+                                    " cassandra."+ beanName.getKeyProperty("name").toLowerCase()+ "." 
+                                        +jmxAttribute.getAttribute().getName().toLowerCase()+ 
+                                    " " +attributeType + 
+                                    " cassandra."+ beanName.getKeyProperty("type").toLowerCase()+ "." 
+                                        +beanName.getKeyProperty("scope").toLowerCase() +  
+                                    " DSE");
                             //Define DIMENSION -- attributes == dimensions
                             System.out.println("DIMENSION cassandra."+ beanName.getKeyProperty("name").toLowerCase()+ "."  + jmxAttribute.getAttribute().getName().toLowerCase()+ " " +  jmxAttribute.getAttribute().getName().toLowerCase());
 
