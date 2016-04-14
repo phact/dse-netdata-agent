@@ -1,12 +1,11 @@
 package org.datadog.jmxfetch.reporter;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-
+import com.google.common.base.Joiner;
 import org.datadog.jmxfetch.Instance;
 import org.datadog.jmxfetch.JMXAttribute;
 
-import com.google.common.base.Joiner;
+import java.util.HashMap;
+import java.util.LinkedList;
 
 public class ConsoleReporter extends Reporter {
 
@@ -16,8 +15,15 @@ public class ConsoleReporter extends Reporter {
     @Override
     protected void sendMetricPoint(String metricName, double value, String[] tags) {
         String tagString = "[" + Joiner.on(",").join(tags) + "]";
+
+        String prettyMetricName= metricName.replace("_","");
+
+        if (prettyMetricName.split("\\.").length ==2){
+            prettyMetricName = prettyMetricName + ".value";
+        }
+
         //System.out.println(metricName + tagString + " - " + System.currentTimeMillis() / 1000 + " = " + value);
-        System.out.println("SET " + metricName.replace("_","") +  " = " + String.format("%10f", (float)value));
+        System.out.println("SET " + prettyMetricName +  " = " + String.format("%10f", (float)value));
 
         HashMap<String, Object> m = new HashMap<String, Object>();
         m.put("name", metricName);

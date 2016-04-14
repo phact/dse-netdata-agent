@@ -1,15 +1,15 @@
 package org.datadog.jmxfetch.reporter;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.datadog.jmxfetch.App;
 import org.datadog.jmxfetch.Instance;
 import org.datadog.jmxfetch.JMXAttribute;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.lang.Integer;
 import java.util.LinkedList;
+import java.util.List;
 
 
 public abstract class Reporter {
@@ -70,7 +70,33 @@ public abstract class Reporter {
             String metricType = (String) metric.get("metric_type");
             String[] tags = Arrays.asList((String[]) metric.get("tags")).toArray(new String[0]);
 
-            System.out.println("BEGIN " + "cassandra." + tags[2].split(":")[1].toLowerCase() + "." + tags[3].split(":")[1].toLowerCase() +  "-" + metricName.replace("_","") );
+            String[] typeArray = Arrays.stream(tags)
+                    .filter(item -> item.startsWith("type:"))
+                    .toArray(index -> new String[index]);
+
+            String type = "";
+            if (typeArray.length >0){
+                type = typeArray[0].split(":")[1];
+            }
+
+            final String finalType= type;
+
+            String[] typeTypeArray = Arrays.stream(tags)
+                    .filter(item -> item.startsWith(finalType))
+                    .toArray(index -> new String[index]);
+
+            String typeType = "";
+            if (type!="" && typeTypeArray.length > 0){
+                typeType = typeTypeArray[0].split(":")[1];
+            }
+
+            String prettyMetricName= metricName.replace("_","");
+
+            if (prettyMetricName.split("\\.").length ==2){
+                prettyMetricName = prettyMetricName + ".value";
+            }
+
+            System.out.println("BEGIN " + "cassandra." + type.toLowerCase() + "." + typeType.toLowerCase() +  "-" + prettyMetricName );
 
             // StatsD doesn't support rate metrics so we need to have our own aggregator to compute rates
             if (!"gauge".equals(metricType)) {
