@@ -4,6 +4,7 @@ import com.google.common.base.Joiner;
 import org.datadog.jmxfetch.Instance;
 import org.datadog.jmxfetch.JMXAttribute;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -21,6 +22,34 @@ public class ConsoleReporter extends Reporter {
         if (prettyMetricName.split("\\.").length ==2){
             prettyMetricName = prettyMetricName + ".value";
         }
+
+        String[] jmxDomainArray= Arrays.stream(tags)
+                .filter(item -> item.startsWith("jmx_domain:"))
+                .toArray(index -> new String[index]);
+
+        String jmxDomain = "";
+        if (jmxDomainArray.length >0){
+            jmxDomain= jmxDomainArray[0].split(":")[1];
+            String[] domainArray = jmxDomain.split("\\.") ;
+            jmxDomain= String.join(".",Arrays.copyOfRange(domainArray,2,domainArray.length));
+        }
+
+        if (prettyMetricName.split("\\.").length ==2){
+            prettyMetricName = prettyMetricName + ".value";
+        }
+
+
+        String[] domainArray = jmxDomain.split("\\.") ;
+        String[] nameArray = prettyMetricName.split("\\.") ;
+        int j=0;
+        for (int i = 0 ; i < nameArray.length ; i++){
+            if (domainArray.length > i && domainArray[i].equals(nameArray[i])){
+                j++;
+            }
+        }
+
+        prettyMetricName = jmxDomain + "." +String.join(".", Arrays.copyOfRange(nameArray, j, nameArray.length));
+
 
         //System.out.println(metricName + tagString + " - " + System.currentTimeMillis() / 1000 + " = " + value);
         System.out.println("SET " + prettyMetricName +  " = " + String.format("%10f", (float)value));
