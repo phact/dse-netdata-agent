@@ -246,25 +246,40 @@ public class Instance {
                             metricsCount += jmxAttribute.getMetricsCount();
                             this.matchingAttributes.add(jmxAttribute);
 
+                            String scope = "";
+                            if (beanName.getKeyProperty("scope")!= null){
+                                scope = "." + beanName.getKeyProperty("scope").toLowerCase();
+                            }
+
+                            String name= "";
+                            if (beanName.getKeyProperty("name")!= null){
+                                name = "." + beanName.getKeyProperty("name").toLowerCase();
+                            }
+
+                            String type = "";
+                            if (beanName.getKeyProperty("type")!= null){
+                                type = "." + beanName.getKeyProperty("type").toLowerCase();
+                            }
+
+                            String trimmedConcat = (type + scope + name + ".").substring(1,(type + scope + name + ".").length());
+
                             //CHART definition, chart per bean.
                             //System.out.println("CHART cassandra."+ beanName.getKeyProperty("type").toLowerCase()+ "." +beanName.getKeyProperty("scope").toLowerCase() + "-cassandra." + beanName.getKeyProperty("name").toLowerCase()+ "." +jmxAttribute.getAttribute().getName().toLowerCase()+ " " + beanName.getKeyProperty("scope").toLowerCase() + "." +beanName.getKeyProperty("name").toLowerCase()+  " cassandra."+ beanName.getKeyProperty("name").toLowerCase()+ "." +jmxAttribute.getAttribute().getName().toLowerCase()+ " " +attributeType + " cassandra."+ beanName.getKeyProperty("type").toLowerCase()+ "." +beanName.getKeyProperty("scope").toLowerCase() +  " \"DataStax Enterprise\"");
-                            System.out.println("CHART cassandra."+ beanName.getKeyProperty("type").toLowerCase()+ "." +
-                                    beanName.getKeyProperty("scope").toLowerCase() +
-                                    "-cassandra." +
-                                        beanName.getKeyProperty("name").toLowerCase()+ "." +
+                            System.out.println("CHART cassandra."+ beanName.getKeyProperty("type").toLowerCase()+
+                                    scope +
+                                    "-cassandra" +
+                                        name +
                                         jmxAttribute.getAttribute().getName().toLowerCase()+
-                                    " "+  beanName.getKeyProperty("type").toLowerCase()+ "." +
-                                        beanName.getKeyProperty("scope").toLowerCase() + "." +
-                                        beanName.getKeyProperty("name").toLowerCase()+ "." +
+                                    " "+ trimmedConcat +
                                         jmxAttribute.getAttribute().getName().toLowerCase()  +
-                                    " cassandra."+ beanName.getKeyProperty("name").toLowerCase()+ "." 
+                                    " cassandra"+ name + "."
                                         +jmxAttribute.getAttribute().getName().toLowerCase()+ 
                                     " " +attributeType + 
-                                    " cassandra."+ beanName.getKeyProperty("type").toLowerCase()+ "." 
-                                        +beanName.getKeyProperty("scope").toLowerCase() +  
+                                    " cassandra"+ type
+                                        + scope +
                                     " DSE");
                             //Define DIMENSION -- attributes == dimensions
-                            System.out.println("DIMENSION cassandra."+ beanName.getKeyProperty("name").toLowerCase()+ "."  + jmxAttribute.getAttribute().getName().toLowerCase()+ " " +  jmxAttribute.getAttribute().getName().toLowerCase());
+                            System.out.println("DIMENSION cassandra"+ name + "."  + jmxAttribute.getAttribute().getName().toLowerCase()+ " " +  jmxAttribute.getAttribute().getName().toLowerCase());
 
                             if (action.equals(AppConfig.ACTION_LIST_EVERYTHING) ||
                                     action.equals(AppConfig.ACTION_LIST_MATCHING) ||
