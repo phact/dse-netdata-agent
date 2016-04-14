@@ -6,10 +6,7 @@ import org.datadog.jmxfetch.App;
 import org.datadog.jmxfetch.Instance;
 import org.datadog.jmxfetch.JMXAttribute;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 
 public abstract class Reporter {
@@ -70,9 +67,22 @@ public abstract class Reporter {
             String metricType = (String) metric.get("metric_type");
             String[] tags = Arrays.asList((String[]) metric.get("tags")).toArray(new String[0]);
 
+            //System.out.println(Arrays.toString((String[]) metric.get("tags")));
+
             String[] typeArray = Arrays.stream(tags)
                     .filter(item -> item.startsWith("type:"))
                     .toArray(index -> new String[index]);
+
+            String[] jmxDomainArray= Arrays.stream(tags)
+                    .filter(item -> item.startsWith("jmx_domain:"))
+                    .toArray(index -> new String[index]);
+
+            String jmxDomain = "";
+            if (jmxDomainArray.length >0){
+                jmxDomain= jmxDomainArray[0].split(":")[1];
+                String[] domainArray = jmxDomain.split("\\.") ;
+                jmxDomain= String.join(".",Arrays.copyOfRange(domainArray,2,domainArray.length));
+            }
 
             String type = "";
             if (typeArray.length >0){
@@ -103,7 +113,19 @@ public abstract class Reporter {
                 prettyMetricName = prettyMetricName + ".value";
             }
 
-            System.out.println("BEGIN " + "cassandra" + type + typeType +  "-" + prettyMetricName );
+
+            String[] domainArray = jmxDomain.split("\\.") ;
+            String[] nameArray = prettyMetricName.split("\\.") ;
+            int j=0;
+            for (int i = 0 ; i < nameArray.length ; i++){
+               if (domainArray.length > i && domainArray[i].equals(nameArray[i])){
+                   j++;
+               }
+            }
+
+            prettyMetricName = jmxDomain + "." +String.join(".",Arrays.copyOfRange(nameArray, j, nameArray.length));
+
+            System.out.println("BEGIN " + jmxDomain + type + typeType +  "-" + prettyMetricName );
 
             // StatsD doesn't support rate metrics so we need to have our own aggregator to compute rates
             if (!"gauge".equals(metricType)) {

@@ -263,23 +263,27 @@ public class Instance {
 
                             String trimmedConcat = (type + scope + name + ".").substring(1,(type + scope + name + ".").length());
 
+                            String domain= beanName.getDomain();
+                            String[] domainArray = domain.split("\\.") ;
+                            domain= String.join(".",Arrays.copyOfRange(domainArray,2,domainArray.length));
+
                             //CHART definition, chart per bean.
                             //System.out.println("CHART cassandra."+ beanName.getKeyProperty("type").toLowerCase()+ "." +beanName.getKeyProperty("scope").toLowerCase() + "-cassandra." + beanName.getKeyProperty("name").toLowerCase()+ "." +jmxAttribute.getAttribute().getName().toLowerCase()+ " " + beanName.getKeyProperty("scope").toLowerCase() + "." +beanName.getKeyProperty("name").toLowerCase()+  " cassandra."+ beanName.getKeyProperty("name").toLowerCase()+ "." +jmxAttribute.getAttribute().getName().toLowerCase()+ " " +attributeType + " cassandra."+ beanName.getKeyProperty("type").toLowerCase()+ "." +beanName.getKeyProperty("scope").toLowerCase() +  " \"DataStax Enterprise\"");
-                            System.out.println("CHART cassandra"+ type +
+                            System.out.println("CHART "+ domain+ type +
                                     scope +
-                                    "-cassandra" +
+                                    "-"+ domain +
                                         name + "." +
                                         jmxAttribute.getAttribute().getName().toLowerCase()+
                                     " "+ trimmedConcat +
                                         jmxAttribute.getAttribute().getName().toLowerCase()  +
-                                    " cassandra"+ name + "."
+                                    " "+ domain + name + "."
                                         +jmxAttribute.getAttribute().getName().toLowerCase()+ 
                                     " " +attributeType + 
-                                    " cassandra"+ type
+                                    " "+ domain + type
                                         + scope +
-                                    " DSE");
+                                    " " + domain);
                             //Define DIMENSION -- attributes == dimensions
-                            System.out.println("DIMENSION cassandra"+ name + "."  + jmxAttribute.getAttribute().getName().toLowerCase()+ " " +  jmxAttribute.getAttribute().getName().toLowerCase());
+                            System.out.println("DIMENSION "+ domain + name + "."  + jmxAttribute.getAttribute().getName().toLowerCase()+ " " +  jmxAttribute.getAttribute().getName().toLowerCase());
 
                             if (action.equals(AppConfig.ACTION_LIST_EVERYTHING) ||
                                     action.equals(AppConfig.ACTION_LIST_MATCHING) ||
