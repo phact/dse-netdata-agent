@@ -90,13 +90,20 @@ public abstract class Reporter {
                 typeType = typeTypeArray[0].split(":")[1];
             }
 
+            if (type != "") {
+                type = "." + type.toLowerCase();
+            }
+            if (typeType != "") {
+                typeType = "." + typeType.toLowerCase();
+            }
+
             String prettyMetricName= metricName.replace("_","");
 
             if (prettyMetricName.split("\\.").length ==2){
                 prettyMetricName = prettyMetricName + ".value";
             }
 
-            System.out.println("BEGIN " + "cassandra." + type.toLowerCase() + "." + typeType.toLowerCase() +  "-" + prettyMetricName );
+            System.out.println("BEGIN " + "cassandra" + type + typeType +  "-" + prettyMetricName );
 
             // StatsD doesn't support rate metrics so we need to have our own aggregator to compute rates
             if (!"gauge".equals(metricType)) {
