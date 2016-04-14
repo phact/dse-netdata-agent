@@ -1,22 +1,13 @@
 package org.datadog.jmxfetch;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import org.apache.log4j.Logger;
+import org.datadog.jmxfetch.reporter.Reporter;
 
 import javax.management.MBeanAttributeInfo;
 import javax.management.ObjectName;
 import javax.security.auth.login.FailedLoginException;
-
-import org.apache.log4j.Logger;
-import org.datadog.jmxfetch.reporter.Reporter;
+import java.io.IOException;
+import java.util.*;
 
 public class Instance {
     private final static Logger LOGGER = Logger.getLogger(Instance.class.getName());
@@ -256,9 +247,9 @@ public class Instance {
                             this.matchingAttributes.add(jmxAttribute);
 
                             //CHART definition, chart per bean.
-                            System.out.println("CHART cassandra."+ beanName.getKeyProperty("type").toLowerCase()+ "." +beanName.getKeyProperty("scope").toLowerCase() + " cassandra." + beanName.getKeyProperty("name").toLowerCase()+ "." +jmxAttribute.getAttribute().getName().toLowerCase()+" " +attributeType);
+                            System.out.println("CHART cassandra."+ beanName.getKeyProperty("type").toLowerCase()+ "." +beanName.getKeyProperty("scope").toLowerCase() + "-cassandra." + beanName.getKeyProperty("name").toLowerCase()+ "." +jmxAttribute.getAttribute().getName().toLowerCase()+ " " + beanName.getKeyProperty("scope").toLowerCase() + "." +beanName.getKeyProperty("name").toLowerCase()+  " cassandra."+ beanName.getKeyProperty("name").toLowerCase()+ "." +jmxAttribute.getAttribute().getName().toLowerCase()+ " " +attributeType + " cassandra."+ beanName.getKeyProperty("type").toLowerCase()+ "." +beanName.getKeyProperty("scope").toLowerCase() +  " \"DataStax Enterprise\"");
                             //Define DIMENSION -- attributes == dimensions
-                            System.out.println("DIMENSION cassandra."+ beanName.getKeyProperty("name").toLowerCase()+ "."  + jmxAttribute.getAttribute().getName().toLowerCase());
+                            System.out.println("DIMENSION cassandra."+ beanName.getKeyProperty("name").toLowerCase()+ "."  + jmxAttribute.getAttribute().getName().toLowerCase()+ " " +  jmxAttribute.getAttribute().getName().toLowerCase());
 
                             if (action.equals(AppConfig.ACTION_LIST_EVERYTHING) ||
                                     action.equals(AppConfig.ACTION_LIST_MATCHING) ||

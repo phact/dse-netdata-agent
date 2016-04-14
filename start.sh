@@ -1,6 +1,5 @@
 #!/bin/bash
 
-cd /srv/dse-netdata-agent/
 frequency=1
 if [ -n "$1"   ]; then
     frequency=$1

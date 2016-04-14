@@ -70,7 +70,7 @@ public abstract class Reporter {
             String metricType = (String) metric.get("metric_type");
             String[] tags = Arrays.asList((String[]) metric.get("tags")).toArray(new String[0]);
 
-            System.out.println("BEGIN " + "cassandra." + tags[2].split(":")[1].toLowerCase() + "." + tags[3].split(":")[1].toLowerCase() );
+            System.out.println("BEGIN " + "cassandra." + tags[2].split(":")[1].toLowerCase() + "." + tags[3].split(":")[1].toLowerCase() +  "-" + metricName.replace("_","") );
 
             // StatsD doesn't support rate metrics so we need to have our own aggregator to compute rates
             if (!"gauge".equals(metricType)) {
