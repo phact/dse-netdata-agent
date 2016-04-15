@@ -67,7 +67,6 @@ public abstract class Reporter {
             String metricType = (String) metric.get("metric_type");
             String[] tags = Arrays.asList((String[]) metric.get("tags")).toArray(new String[0]);
 
-            //System.out.println(Arrays.toString((String[]) metric.get("tags")));
 
             String[] typeArray = Arrays.stream(tags)
                     .filter(item -> item.startsWith("type:"))

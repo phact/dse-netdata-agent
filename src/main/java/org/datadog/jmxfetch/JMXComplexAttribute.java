@@ -1,20 +1,11 @@
 package org.datadog.jmxfetch;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import org.datadog.jmxfetch.util.JMXUtil;
 
-import javax.management.AttributeNotFoundException;
-import javax.management.InstanceNotFoundException;
-import javax.management.MBeanAttributeInfo;
-import javax.management.MBeanException;
-import javax.management.ObjectName;
-import javax.management.ReflectionException;
+import javax.management.*;
 import javax.management.openmbean.CompositeData;
+import java.io.IOException;
+import java.util.*;
 
 @SuppressWarnings("unchecked")
 public class JMXComplexAttribute extends JMXAttribute {
@@ -30,7 +21,8 @@ public class JMXComplexAttribute extends JMXAttribute {
     }
 
     private void populateSubAttributeList(Object attributeValue) {
-        String attributeType = getAttribute().getType();
+        String attributeType = JMXUtil.getReadableClassName(getAttribute().getType());
+
         if ("javax.management.openmbean.CompositeData".equals(attributeType)) {
             CompositeData data = (CompositeData) attributeValue;
             for (String key : data.getCompositeType().keySet()) {
@@ -40,6 +32,11 @@ public class JMXComplexAttribute extends JMXAttribute {
             HashMap<String, Double> data = (HashMap<String, Double>) attributeValue;
             for (String key : data.keySet()) {
                 this.subAttributeList.put(key, new HashMap<String, Object>());
+            }
+        } else if ("long[]".equals(attributeType)) {
+            long[] data = (long[]) attributeValue;
+            for (int i = 0 ; i < data.length ; i++) {
+                this.subAttributeList.put(""+i, new HashMap<String, Object>());
             }
         }
     }
@@ -78,8 +75,9 @@ public class JMXComplexAttribute extends JMXAttribute {
     private double getValue(String subAttribute) throws AttributeNotFoundException, InstanceNotFoundException,
             MBeanException, ReflectionException, IOException {
 
+
         Object value = this.getJmxValue();
-        String attributeType = getAttribute().getType();
+        String attributeType = JMXUtil.getReadableClassName(getAttribute().getType());
 
         if ("javax.management.openmbean.CompositeData".equals(attributeType)) {
             CompositeData data = (CompositeData) value;
@@ -88,12 +86,16 @@ public class JMXComplexAttribute extends JMXAttribute {
         } else if ("java.util.HashMap".equals(attributeType)) {
             HashMap<String, Object> data = (HashMap<String, Object>) value;
             return getValueAsDouble(data.get(subAttribute));
+        }else if ("long[]".equals(attributeType)) {
+            long[] data = (long[]) value;
+            return getValueAsDouble(data[Integer.parseInt(subAttribute)]);
         }
+
         throw new NumberFormatException();
     }
 
     private Object getMetricType(String subAttribute) {
-        String subAttributeName = getAttribute().getName() + "." + subAttribute;
+        String subAttributeName = JMXUtil.getReadableClassName(getAttribute().getName()) + "." + subAttribute;
         String metricType = null;
 
         Filter include = getMatchingConf().getInclude();
@@ -113,7 +115,7 @@ public class JMXComplexAttribute extends JMXAttribute {
     }
 
     private String getAlias(String subAttribute) {
-        String subAttributeName = getAttribute().getName() + "." + subAttribute;
+        String subAttributeName = JMXUtil.getReadableClassName(getAttribute().getName()) + "." + subAttribute;
 
         Filter include = getMatchingConf().getInclude();
         LinkedHashMap<String, Object> conf = getMatchingConf().getConf();
@@ -128,13 +130,13 @@ public class JMXComplexAttribute extends JMXAttribute {
 
     @Override
     public boolean match(Configuration configuration) {
+
         if (!matchDomain(configuration)
                 || !matchBean(configuration)
                 || excludeMatchDomain(configuration)
                 || excludeMatchBean(configuration)) {
             return false;
         }
-
         try {
             populateSubAttributeList(getJmxValue());
         } catch (Exception e) {
@@ -153,6 +155,8 @@ public class JMXComplexAttribute extends JMXAttribute {
             return true;
         } else if (params.getAttribute() == null) {
             return matchOnEmpty;
+        } else if (params.getAttribute() == "long[]"){
+            return true;
         }
         return false;
 
@@ -179,6 +183,7 @@ public class JMXComplexAttribute extends JMXAttribute {
 
         Filter exclude = configuration.getExclude();
         if (exclude.getAttribute() != null && matchSubAttribute(exclude, getAttributeName(), false)) {
+
             return true;
         }
 

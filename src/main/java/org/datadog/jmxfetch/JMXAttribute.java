@@ -1,26 +1,14 @@
 package org.datadog.jmxfetch;
 
+import org.apache.log4j.Logger;
+import org.datadog.jmxfetch.util.JMXUtil;
+
+import javax.management.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Pattern;
-
-import javax.management.AttributeNotFoundException;
-import javax.management.InstanceNotFoundException;
-import javax.management.MBeanAttributeInfo;
-import javax.management.MBeanException;
-import javax.management.ObjectName;
-import javax.management.ReflectionException;
-
-import org.apache.log4j.Logger;
 
 public abstract class JMXAttribute {
 
@@ -50,7 +38,7 @@ public abstract class JMXAttribute {
         this.beanName = beanName;
         this.matchingConf = null;
         this.connection = connection;
-        this.attributeName = attribute.getName();
+        this.attributeName = JMXUtil.getReadableClassName(attribute.getName());
         this.beanStringName = beanName.toString();
         this.cassandraAliasing = cassandraAliasing;
 
@@ -177,7 +165,7 @@ public abstract class JMXAttribute {
     }
 
     Object getJmxValue() throws AttributeNotFoundException, InstanceNotFoundException, MBeanException, ReflectionException, IOException {
-        return this.connection.getAttribute(this.beanName, this.attribute.getName());
+        return this.connection.getAttribute(this.beanName, JMXUtil.getReadableClassName(this.attribute.getName()));
     }
 
     boolean matchDomain(Configuration conf) {
@@ -314,7 +302,7 @@ public abstract class JMXAttribute {
         if (valueConversions == null) {
             Object includedAttribute = matchingConf.getInclude().getAttribute();
             if (includedAttribute instanceof LinkedHashMap<?, ?>) {
-                String attributeName = this.attribute.getName();
+                String attributeName = JMXUtil.getReadableClassName(this.attribute.getName());
                 LinkedHashMap<String, LinkedHashMap<Object, Object>> attribute =
                         ((LinkedHashMap<String, LinkedHashMap<String, LinkedHashMap<Object, Object>>>) includedAttribute).get(attributeName);
 
@@ -385,4 +373,5 @@ public abstract class JMXAttribute {
     protected HashMap<String, String> getBeanParameters() {
         return beanParameters;
     }
+
 }
