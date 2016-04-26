@@ -285,8 +285,8 @@ public class Instance {
 
                             String attributeName  = "." + jmxAttribute.getAttribute().getName().toLowerCase();
                             attributeName = attributeName.replace(".value","");
-                            System.out.println("name" + attributeName);
-                            System.out.println("name" + name);
+                            //System.out.println("name" + attributeName);
+                            //System.out.println("name" + name);
                             //CHART definition, chart per bean.
                             //System.out.println("CHART cassandra."+ beanName.getKeyProperty("type").toLowerCase()+ "." +beanName.getKeyProperty("scope").toLowerCase() + "-cassandra." + beanName.getKeyProperty("name").toLowerCase()+ "." +jmxAttribute.getAttribute().getName().toLowerCase()+ " " + beanName.getKeyProperty("scope").toLowerCase() + "." +beanName.getKeyProperty("name").toLowerCase()+  " cassandra."+ beanName.getKeyProperty("name").toLowerCase()+ "." +jmxAttribute.getAttribute().getName().toLowerCase()+ " " +attributeType + " cassandra."+ beanName.getKeyProperty("type").toLowerCase()+ "." +beanName.getKeyProperty("scope").toLowerCase() +  " \"DataStax Enterprise\"");
                             System.out.println("CHART "+ domain+ type +
