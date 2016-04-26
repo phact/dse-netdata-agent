@@ -143,7 +143,7 @@ public abstract class Reporter {
             String jmxDomain = String.join(".",jmxDomainArray).split(":")[1];
 
             if (metricComplexity == "complex"){
-                System.out.println(prettyMetricName);
+                //System.out.println(prettyMetricName);
                 int lastIndex= prettyMetricName.lastIndexOf(".");
                 int length = prettyMetricName.length();
 
