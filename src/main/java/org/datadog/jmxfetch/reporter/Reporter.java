@@ -6,7 +6,9 @@ import org.datadog.jmxfetch.App;
 import org.datadog.jmxfetch.Instance;
 import org.datadog.jmxfetch.JMXAttribute;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
 
 
 public abstract class Reporter {
@@ -138,36 +140,25 @@ public abstract class Reporter {
 
             String prettyMetricName= metricName.replace("_","");
 
-
-
-            if (metricComplexity == "complex"){
-                int lastIndex= prettyMetricName.lastIndexOf(".");
-                prettyMetricName = prettyMetricName.substring(0,lastIndex);
-            }
-            /*
-            if (prettyMetricName.split("\\.").length ==2){
-                prettyMetricName = prettyMetricName + ".value";
-            }
-
-            String[] domainArray = jmxDomain.split("\\.") ;
-            String[] nameArray = prettyMetricName.split("\\.") ;
-            int j=0;
-            for (int i = 0 ; i < nameArray.length ; i++){
-               if (domainArray.length > i && domainArray[i].equals(nameArray[i])){
-                   j++;
-               }
-            }
-
-            prettyMetricName = jmxDomain + "." +String.join(".",Arrays.copyOfRange(nameArray, j, nameArray.length));
-            */
             String jmxDomain = String.join(".",jmxDomainArray).split(":")[1];
 
-            prettyMetricName = prettyMetricName.replace(jmxDomain+".", "");
+            if (metricComplexity == "complex"){
+                System.out.println(prettyMetricName);
+                int lastIndex= prettyMetricName.lastIndexOf(".");
+                int length = prettyMetricName.length();
 
-            //System.out.println("Pretty metric name: "+  prettyMetricName);
+                prettyMetricName = prettyMetricName.substring(0,lastIndex);
+                if (metricName.replace("_","").substring(lastIndex+1, length).equals("0")) {
+                    prettyMetricName = prettyMetricName.replace(jmxDomain + ".", "");
+                    System.out.println("BEGIN " + jmxDomain + type + typeType + "-" + jmxDomain + myIndex + name + "." + prettyMetricName);
+                }
+            }else {
+                prettyMetricName = prettyMetricName.replace(jmxDomain + ".", "");
 
-            System.out.println("BEGIN " + jmxDomain + type + typeType +  "-"  + jmxDomain + myIndex + name + "." + prettyMetricName );
+                //System.out.println("Pretty metric name: "+  prettyMetricName);
 
+                System.out.println("BEGIN " + jmxDomain + type + typeType + "-" + jmxDomain + myIndex + name + "." + prettyMetricName);
+            }
             // StatsD doesn't support rate metrics so we need to have our own aggregator to compute rates
             if (!"gauge".equals(metricType)) {
                 String key = generateId(metric);
@@ -195,7 +186,16 @@ public abstract class Reporter {
                 sendMetricPoint(metricName, currentValue, tags);
             }
 
-            System.out.println("END");
+            if (metricComplexity == "complex"){
+                int metricSubSize= (int) metric.get("size");
+                int lastIndex= metricName.lastIndexOf(".");
+                int size = metricName.length();
+                if (Integer.parseInt(metricName.substring(lastIndex+1, size)) == metricSubSize-1) {
+                    System.out.println("END");
+                }
+            }else {
+                System.out.println("END");
+            }
         }
 
         ratesAggregator.put(instanceName, instanceRatesAggregator);

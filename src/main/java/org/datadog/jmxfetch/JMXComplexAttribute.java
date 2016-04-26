@@ -65,6 +65,7 @@ public class JMXComplexAttribute extends JMXAttribute {
             }
 
             metric.put("complexity", "complex");
+            metric.put("size", subAttributeList.size());
             metric.put("value", getValue(subAttribute));
             metrics.add(metric);
 
