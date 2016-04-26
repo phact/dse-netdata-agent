@@ -283,6 +283,10 @@ public class Instance {
                             //System.out.println("tags: "+ Arrays.toString(jmxAttribute.getTags()));
                             //System.out.println("kp list: "+ (beanName.getKeyPropertyListString()));
 
+                            String chartType = "";
+                            if (jmxAttribute.getClass().toString().contains("JMXComplexAttribute")){
+                                chartType = " stacked";
+                            }
                             String attributeName  = "." + jmxAttribute.getAttribute().getName().toLowerCase();
                             attributeName = attributeName.replace(".value","");
                             //System.out.println("name" + attributeName);
@@ -301,7 +305,8 @@ public class Instance {
                                     " " +attributeType + 
                                     " "+ domain + type
                                         + scope +
-                                    " " + domain);
+                                    " " + domain +
+                                    chartType);
 
                             //System.out.println("class: "+jmxAttribute.getClass());
                             //System.out.println("mc: "+ metricsCount);
