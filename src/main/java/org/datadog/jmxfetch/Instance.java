@@ -268,8 +268,13 @@ public class Instance {
                             String trimmedConcat = (type + scope + name + ".").substring(1,(type + scope + name + ".").length());
 
                             String domain= beanName.getDomain();
+
+                            /*
                             String[] domainArray = domain.split("\\.") ;
                             domain= String.join(".",Arrays.copyOfRange(domainArray,2,domainArray.length));
+                            */
+
+                            //this.getMetrics();
 
                             //CHART definition, chart per bean.
                             //System.out.println("CHART cassandra."+ beanName.getKeyProperty("type").toLowerCase()+ "." +beanName.getKeyProperty("scope").toLowerCase() + "-cassandra." + beanName.getKeyProperty("name").toLowerCase()+ "." +jmxAttribute.getAttribute().getName().toLowerCase()+ " " + beanName.getKeyProperty("scope").toLowerCase() + "." +beanName.getKeyProperty("name").toLowerCase()+  " cassandra."+ beanName.getKeyProperty("name").toLowerCase()+ "." +jmxAttribute.getAttribute().getName().toLowerCase()+ " " +attributeType + " cassandra."+ beanName.getKeyProperty("type").toLowerCase()+ "." +beanName.getKeyProperty("scope").toLowerCase() +  " \"DataStax Enterprise\"");
@@ -286,8 +291,22 @@ public class Instance {
                                     " "+ domain + type
                                         + scope +
                                     " " + domain);
-                            //Define DIMENSION -- attributes == dimensions
-                            System.out.println("DIMENSION "+ domain + name + "."  + jmxAttribute.getAttribute().getName().toLowerCase()+ " " +  jmxAttribute.getAttribute().getName().toLowerCase());
+
+                            //System.out.println("class: "+jmxAttribute.getClass());
+                            //System.out.println("mc: "+ metricsCount);
+                            //System.out.println("mc: "+ jmxAttribute.getMetricsCount());
+
+                            if (jmxAttribute.getClass().toString().contains("JMXComplexAttribute")){
+                                int mcCount = jmxAttribute.getMetricsCount();
+                                for (int i=0; i<mcCount; i++){
+
+                                    //Define DIMENSION -- attributes == dimensions
+                                    System.out.println("DIMENSION "+ domain + name + "."  + jmxAttribute.getAttribute().getName().toLowerCase()+ "." + i+ " " +  jmxAttribute.getAttribute().getName().toLowerCase() + "." + i);
+                                }
+                            } else{
+                                System.out.println("DIMENSION "+ domain + name + "."  + jmxAttribute.getAttribute().getName().toLowerCase()+ " " +  jmxAttribute.getAttribute().getName().toLowerCase());
+                            }
+
 
                             if (action.equals(AppConfig.ACTION_LIST_EVERYTHING) ||
                                     action.equals(AppConfig.ACTION_LIST_MATCHING) ||

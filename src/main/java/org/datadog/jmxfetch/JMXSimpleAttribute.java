@@ -1,18 +1,8 @@
 package org.datadog.jmxfetch;
 
+import javax.management.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.Map;
-
-import javax.management.AttributeNotFoundException;
-import javax.management.InstanceNotFoundException;
-import javax.management.MBeanAttributeInfo;
-import javax.management.MBeanException;
-import javax.management.ObjectName;
-import javax.management.ReflectionException;
+import java.util.*;
 
 @SuppressWarnings("unchecked")
 public class JMXSimpleAttribute extends JMXAttribute {
@@ -34,6 +24,7 @@ public class JMXSimpleAttribute extends JMXAttribute {
         metric.put("value", getValue());
         metric.put("tags", getTags());
         metric.put("metric_type", getMetricType());
+        metric.put("complexity", "simple");
         LinkedList<HashMap<String, Object>> metrics = new LinkedList<HashMap<String, Object>>();
         metrics.add(metric);
         return metrics;
@@ -98,7 +89,8 @@ public class JMXSimpleAttribute extends JMXAttribute {
 
         //If still null - generate generic alias,
         if (alias == null) {
-            alias = "jmx." + getDomain() + "." + getAttributeName();
+            //alias = "jmx." + getDomain() + "." + getAttributeName();
+            alias =  getDomain() + "." + getAttributeName();
         }
         alias = convertMetricName(alias);
         return alias;
@@ -110,12 +102,14 @@ public class JMXSimpleAttribute extends JMXAttribute {
             String metricName = beanParameters.get("name");
             String attributeName = getAttributeName();
             if (attributeName.equals("Value")) {
-                return "cassandra." + metricName;
+                //return "cassandra." + metricName;
+                return  metricName;
             }
-            return "cassandra." + metricName + "." + attributeName;
+            return  metricName + "." + attributeName;
         }
         //Deprecated Cassandra metric.  Remove domain prefix.
-        return getDomain().replace("org.apache.", "") + "." + getAttributeName();
+        //return getDomain().replace("org.apache.cassandra", "") + "." + getAttributeName();
+        return getAttributeName();
     }
 
     private String getMetricType() {

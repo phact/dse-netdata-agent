@@ -16,17 +16,35 @@ public class ConsoleReporter extends Reporter {
     @Override
     protected void sendMetricPoint(String metricName, double value, String[] tags) {
         String tagString = "[" + Joiner.on(",").join(tags) + "]";
+        //System.out.println(tagString);
 
         String prettyMetricName= metricName.replace("_","");
 
+        String[] nameArray = Arrays.stream(tags)
+                .filter(item -> item.startsWith("name:"))
+                .toArray(index -> new String[index]);
+
+        String name = "";
+        if (nameArray.length >0){
+            name = nameArray[0].split(":")[1];
+        }
+
+        if (name != "") {
+            name = "." + name.toLowerCase();
+        }
+
+
+        /*
         if (prettyMetricName.split("\\.").length ==2){
             prettyMetricName = prettyMetricName + ".value";
         }
+        */
 
         String[] jmxDomainArray= Arrays.stream(tags)
                 .filter(item -> item.startsWith("jmx_domain:"))
                 .toArray(index -> new String[index]);
 
+        /*
         String jmxDomain = "";
         if (jmxDomainArray.length >0){
             jmxDomain= jmxDomainArray[0].split(":")[1];
@@ -49,10 +67,18 @@ public class ConsoleReporter extends Reporter {
         }
 
         prettyMetricName = jmxDomain + "." +String.join(".", Arrays.copyOfRange(nameArray, j, nameArray.length));
+        */
+
+        String jmxDomain = String.join(".",jmxDomainArray).split(":")[1];
+
+        prettyMetricName = prettyMetricName.replace(jmxDomain+".", "");
 
 
         //System.out.println(metricName + tagString + " - " + System.currentTimeMillis() / 1000 + " = " + value);
-        System.out.println("SET " + prettyMetricName +  " = " + String.format("%10f", (float)value));
+        //System.out.println("SET " + prettyMetricName +  " = " + String.format("%10f", (float)value));
+        //System.out.println("Pretty metric name: "+prettyMetricName);
+
+        System.out.println("SET " + jmxDomain + name +  "." + prettyMetricName +  " = " + String.format("%10f", (float)value));
 
         HashMap<String, Object> m = new HashMap<String, Object>();
         m.put("name", metricName);

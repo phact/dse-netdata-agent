@@ -1,6 +1,6 @@
 instances:
   - host: localhost
-    port: 7100
+    port: 7199
     cassandra_aliasing: true
   #   user: username
   #   password: password

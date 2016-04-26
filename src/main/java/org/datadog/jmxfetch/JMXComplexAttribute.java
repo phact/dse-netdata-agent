@@ -64,6 +64,7 @@ public class JMXComplexAttribute extends JMXAttribute {
                 metric.put("tags", getTags());
             }
 
+            metric.put("complexity", "complex");
             metric.put("value", getValue(subAttribute));
             metrics.add(metric);
 
@@ -115,6 +116,7 @@ public class JMXComplexAttribute extends JMXAttribute {
     }
 
     private String getAlias(String subAttribute) {
+        //System.out.println(subAttribute);
         String subAttributeName = JMXUtil.getReadableClassName(getAttribute().getName()) + "." + subAttribute;
 
         Filter include = getMatchingConf().getInclude();
@@ -124,7 +126,7 @@ public class JMXComplexAttribute extends JMXAttribute {
         } else if (conf.get("metric_prefix") != null) {
             return conf.get("metric_prefix") + "." + getDomain() + "." + subAttributeName;
         }
-        return "jmx." + getDomain() + "." + subAttributeName;
+        return  getDomain() + "." + subAttributeName;
     }
 
 

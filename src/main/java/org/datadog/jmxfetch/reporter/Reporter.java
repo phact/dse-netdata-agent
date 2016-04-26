@@ -63,10 +63,16 @@ public abstract class Reporter {
                 continue;
             }
 
+            String metricComplexity = (String) metric.get("complexity");
             String metricName = (String) metric.get("alias");
             String metricType = (String) metric.get("metric_type");
             String[] tags = Arrays.asList((String[]) metric.get("tags")).toArray(new String[0]);
 
+            //System.out.println(Arrays.toString((String[]) metric.get("tags")));
+
+            String[] nameArray = Arrays.stream(tags)
+                    .filter(item -> item.startsWith("name:"))
+                    .toArray(index -> new String[index]);
 
             String[] typeArray = Arrays.stream(tags)
                     .filter(item -> item.startsWith("type:"))
@@ -76,11 +82,18 @@ public abstract class Reporter {
                     .filter(item -> item.startsWith("jmx_domain:"))
                     .toArray(index -> new String[index]);
 
+            /*
             String jmxDomain = "";
             if (jmxDomainArray.length >0){
                 jmxDomain= jmxDomainArray[0].split(":")[1];
                 String[] domainArray = jmxDomain.split("\\.") ;
                 jmxDomain= String.join(".",Arrays.copyOfRange(domainArray,2,domainArray.length));
+            }
+            */
+
+            String name = "";
+            if (nameArray.length >0){
+                name = nameArray[0].split(":")[1];
             }
 
             String type = "";
@@ -99,6 +112,9 @@ public abstract class Reporter {
                 typeType = typeTypeArray[0].split(":")[1];
             }
 
+            if (name != "") {
+                name = "." + name.toLowerCase();
+            }
             if (type != "") {
                 type = "." + type.toLowerCase();
             }
@@ -108,10 +124,16 @@ public abstract class Reporter {
 
             String prettyMetricName= metricName.replace("_","");
 
+
+
+            if (metricComplexity == "complex"){
+                int lastIndex= prettyMetricName.lastIndexOf(".");
+                prettyMetricName = prettyMetricName.substring(0,lastIndex);
+            }
+            /*
             if (prettyMetricName.split("\\.").length ==2){
                 prettyMetricName = prettyMetricName + ".value";
             }
-
 
             String[] domainArray = jmxDomain.split("\\.") ;
             String[] nameArray = prettyMetricName.split("\\.") ;
@@ -123,8 +145,14 @@ public abstract class Reporter {
             }
 
             prettyMetricName = jmxDomain + "." +String.join(".",Arrays.copyOfRange(nameArray, j, nameArray.length));
+            */
+            String jmxDomain = String.join(".",jmxDomainArray).split(":")[1];
 
-            System.out.println("BEGIN " + jmxDomain + type + typeType +  "-" + prettyMetricName );
+            prettyMetricName = prettyMetricName.replace(jmxDomain+".", "");
+
+            //System.out.println("Pretty metric name: "+  prettyMetricName);
+
+            System.out.println("BEGIN " + jmxDomain + type + typeType +  "-" + jmxDomain + name + "." + prettyMetricName );
 
             // StatsD doesn't support rate metrics so we need to have our own aggregator to compute rates
             if (!"gauge".equals(metricType)) {
