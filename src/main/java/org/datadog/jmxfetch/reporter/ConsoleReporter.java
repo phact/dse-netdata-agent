@@ -23,14 +23,24 @@ public class ConsoleReporter extends Reporter {
         String[] nameArray = Arrays.stream(tags)
                 .filter(item -> item.startsWith("name:"))
                 .toArray(index -> new String[index]);
+        String[] indexArray= Arrays.stream(tags)
+                .filter(item -> item.startsWith("index:"))
+                .toArray(index -> new String[index]);
 
         String name = "";
         if (nameArray.length >0){
             name = nameArray[0].split(":")[1];
         }
+        String myIndex= "";
+        if (indexArray.length >0){
+            myIndex = indexArray[0].split(":")[1];
+        }
 
         if (name != "") {
             name = "." + name.toLowerCase();
+        }
+        if (myIndex!= "") {
+            myIndex = "." + myIndex.toLowerCase();
         }
 
 
@@ -78,7 +88,7 @@ public class ConsoleReporter extends Reporter {
         //System.out.println("SET " + prettyMetricName +  " = " + String.format("%10f", (float)value));
         //System.out.println("Pretty metric name: "+prettyMetricName);
 
-        System.out.println("SET " + jmxDomain + name +  "." + prettyMetricName +  " = " + String.format("%10f", (float)value));
+        System.out.println("SET " + jmxDomain  + myIndex + name +  "." + prettyMetricName +  " = " + String.format("%10f", (float)value));
 
         HashMap<String, Object> m = new HashMap<String, Object>();
         m.put("name", metricName);

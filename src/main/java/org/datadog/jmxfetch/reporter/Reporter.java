@@ -82,6 +82,10 @@ public abstract class Reporter {
                     .filter(item -> item.startsWith("jmx_domain:"))
                     .toArray(index -> new String[index]);
 
+            String[] indexArray= Arrays.stream(tags)
+                    .filter(item -> item.startsWith("index:"))
+                    .toArray(index -> new String[index]);
+
             /*
             String jmxDomain = "";
             if (jmxDomainArray.length >0){
@@ -94,6 +98,11 @@ public abstract class Reporter {
             String name = "";
             if (nameArray.length >0){
                 name = nameArray[0].split(":")[1];
+            }
+
+            String myIndex= "";
+            if (indexArray.length >0){
+                myIndex = indexArray[0].split(":")[1];
             }
 
             String type = "";
@@ -121,6 +130,11 @@ public abstract class Reporter {
             if (typeType != "") {
                 typeType = "." + typeType.toLowerCase();
             }
+
+            if (myIndex!= "") {
+                myIndex = "." + myIndex.toLowerCase();
+            }
+
 
             String prettyMetricName= metricName.replace("_","");
 
@@ -152,7 +166,7 @@ public abstract class Reporter {
 
             //System.out.println("Pretty metric name: "+  prettyMetricName);
 
-            System.out.println("BEGIN " + jmxDomain + type + typeType +  "-" + jmxDomain + name + "." + prettyMetricName );
+            System.out.println("BEGIN " + jmxDomain + type + typeType +  "-"  + jmxDomain + myIndex + name + "." + prettyMetricName );
 
             // StatsD doesn't support rate metrics so we need to have our own aggregator to compute rates
             if (!"gauge".equals(metricType)) {

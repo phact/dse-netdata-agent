@@ -265,7 +265,12 @@ public class Instance {
                                 type = "." + beanName.getKeyProperty("type").toLowerCase();
                             }
 
-                            String trimmedConcat = (type + scope + name + ".").substring(1,(type + scope + name + ".").length());
+                            String index = "";
+                            if (beanName.getKeyProperty("index")!= null){
+                                index= "." + beanName.getKeyProperty("index").toLowerCase();
+                            }
+
+                            String trimmedConcat = (type + scope + index + name + ".").substring(1,(type + scope + index + name).length());
 
                             String domain= beanName.getDomain();
 
@@ -275,18 +280,24 @@ public class Instance {
                             */
 
                             //this.getMetrics();
+                            //System.out.println("tags: "+ Arrays.toString(jmxAttribute.getTags()));
+                            //System.out.println("kp list: "+ (beanName.getKeyPropertyListString()));
 
+                            String attributeName  = "." + jmxAttribute.getAttribute().getName().toLowerCase();
+                            attributeName = attributeName.replace(".value","");
+                            System.out.println("name" + attributeName);
+                            System.out.println("name" + name);
                             //CHART definition, chart per bean.
                             //System.out.println("CHART cassandra."+ beanName.getKeyProperty("type").toLowerCase()+ "." +beanName.getKeyProperty("scope").toLowerCase() + "-cassandra." + beanName.getKeyProperty("name").toLowerCase()+ "." +jmxAttribute.getAttribute().getName().toLowerCase()+ " " + beanName.getKeyProperty("scope").toLowerCase() + "." +beanName.getKeyProperty("name").toLowerCase()+  " cassandra."+ beanName.getKeyProperty("name").toLowerCase()+ "." +jmxAttribute.getAttribute().getName().toLowerCase()+ " " +attributeType + " cassandra."+ beanName.getKeyProperty("type").toLowerCase()+ "." +beanName.getKeyProperty("scope").toLowerCase() +  " \"DataStax Enterprise\"");
                             System.out.println("CHART "+ domain+ type +
                                     scope +
-                                    "-"+ domain +
-                                        name + "." +
-                                        jmxAttribute.getAttribute().getName().toLowerCase()+
+                                    "-"+ domain + index +
+                                        name +
+                                        attributeName+
                                     " "+ trimmedConcat +
-                                        jmxAttribute.getAttribute().getName().toLowerCase()  +
-                                    " "+ domain + name + "."
-                                        +jmxAttribute.getAttribute().getName().toLowerCase()+ 
+                                        attributeName +
+                                    " "+ domain + index + name
+                                        +attributeName+
                                     " " +attributeType + 
                                     " "+ domain + type
                                         + scope +
@@ -301,10 +312,10 @@ public class Instance {
                                 for (int i=0; i<mcCount; i++){
 
                                     //Define DIMENSION -- attributes == dimensions
-                                    System.out.println("DIMENSION "+ domain + name + "."  + jmxAttribute.getAttribute().getName().toLowerCase()+ "." + i+ " " +  jmxAttribute.getAttribute().getName().toLowerCase() + "." + i);
+                                    System.out.println("DIMENSION "+ domain + index + name +  attributeName + "." + i+ " " +  attributeName.replace(".","") + "." + i);
                                 }
                             } else{
-                                System.out.println("DIMENSION "+ domain + name + "."  + jmxAttribute.getAttribute().getName().toLowerCase()+ " " +  jmxAttribute.getAttribute().getName().toLowerCase());
+                                System.out.println("DIMENSION "+ domain + index + name + attributeName + " " +  attributeName.replace(".",""));
                             }
 
 
