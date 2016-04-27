@@ -13,7 +13,7 @@
     <script>
     var netdataTheme = 'slate';
     </script>
-	<script type="text/javascript" src="http://10.200.179.136:19999/dashboard.js"></script>
+	<script type="text/javascript" src="http://10.200.179.134:19999/dashboard.js"></script>
 
     <link href="css/style.css" rel="stylesheet">
 
@@ -52,42 +52,66 @@
         </nav>
 
         <div id="page-wrapper">
-            <div role="sectionhead"><h1 id="system" role="heading">DSE Search Indexing - Realtime Tuning</h1></div>
+            <div role="sectionhead"><h1 id="system" role="heading">Compactions - Realtime Tuning</h1></div>
 
             <div>
-                <p style="display:inline">DSE Search indexes data using parallel threads. To improve performance, you can tune the speed at which you are indexing by controlling the number of concurrent threads per DSE Search core.
+                <p style="display:inline">C* compactions are the process of merging sstables together to cleanse outdated data, garbage collect tombstones, and reduce data fragmentation. Having too many sstables per read will affect your read performance negatively. If you are falling behind on compactions (see pending compactions) you can tune compaction throughput and concurrent compactors.
 
-                Currently you are running <span style="color:#FF5555" id="maxconcurrency_value"></span> threads 
+                Currently you are running <span style="color:#FF5555" id="corecompactorthreads_value"></span> threads 
                 (<div 
-                                                                                                data-netdata="com.datastax.bdp.search-com.datastax.bdp.netflows.netflows.indexpool.maxconcurrency" 
-                                                                                                data-dimensions="maxconcurrency"
+                                                                                                data-netdata="org.apache.cassandra.db.compactionmanager-org.apache.cassandra.db.corecompactorthreads"
+                                                                                                data-dimensions="corecompactorthreads"
                                                                                                 data-after="-120" 
                                                                                                 data-width="10" 
                                                                                                 data-height="15px" 
                                                                                                 data-chart-library="dygraph" 
                                                                                                 data-dygraph-theme="sparkline" 
-                                                                                                data-show-value-of-maxconcurrency-at="maxconcurrency_value"></div>).
+                                                                                                data-show-value-of-corecompactorthreads-at="corecompactorthreads_value"></div>).
 
 
-                Click to <a href="">increase</a> or <a href="">decrease</a> the number of threads.
+                Click to <a href="">increase</a> or <a href="">decrease</a> the number of compactors.
                 </p>
             </div>
 
             <div style="width: 100%; text-align: center;">
-                <div data-netdata="netdata.server_cpu"
-                     data-dimensions="user"
+	    	<div style="display:inline;">
+		     <div data-netdata="users.preads"
+			  data-dimensions="cassandra"
+			  data-chart-library="gauge"
+			  data-width="150px"
+			  data-after="-60"
+			  data-points="60"
+			  data-title="IO Reads (Cassandra user)"
+			  data-units="tps"
+			  data-colors="#0099c6"
+		     ></div>
+		     <div data-netdata="users.pwrites"
+			  data-dimensions="cassandra"
+			  data-chart-library="gauge"
+			  data-width="150px"
+			  data-after="-60"
+			  data-points="60"
+			  data-title="IO Writes (Cassandra user)"
+			  data-units="tps"
+			  data-colors="#bb44cc"
+		     ></div>
+		     <br/>
+		</div>
+
+                <div data-netdata="cpu.cpu3"
+                     data-dimensions="nice"
                      data-chart-library="gauge"
                      data-width="150px"
                      data-after="-60"
                      data-points="60"
-                     data-title="CPU"
+                     data-title="CPU (nice - compaction CPU)"
                      data-units="%"
                      data-colors="#FF5555"
                      ></div>
                 <br/>
 
 
-                <p style="text-align:left; display:inline">Keep an eye on your CPU utilization,
+                <p style="text-align:left; display:inline">
                 <div data-netdata="netdata.server_cpu"
                      data-dimensions="user"
                      data-chart-library="dygraph"
@@ -99,18 +123,15 @@
                      data-colors="#FF5555"
                      ></div>
 
-                 if all of your resources are spent indexing, it will affect your normal C* operations.</p>
+                 Ensure that you have selected the right compaction for your datamodel.</p>
 
-                <div data-netdata="com.datastax.bdp.search-com.datastax.bdp.netflows.netflows.indexpool.processedtasks"
-                     data-title="Indexing Throughput for Vehicle Stats"
+                <div data-netdata="org.apache.cassandra.db.compactionmanager-org.apache.cassandra.db.pendingtasks"
+                     data-title="Pending Compactions"
                      ></div>
-                <div data-netdata="com.datastax.bdp.search-com.datastax.bdp.netflows.netflows.indexpool.queuesize"
-                     data-title="Indexing Queue Size for Vehicle Stats"
+                <div data-netdata="org.apache.cassandra.db.compactionmanager-org.apache.cassandra.db.totalbytescompacted"
+                     data-title="Total bytes compacted"
                      ></div>
 
-                <div data-netdata="com.datastax.bdp.search-com.datastax.bdp.netflows.netflows.indexpool.taskprocessingtimenanos"
-                     data-title="Task processing time for Vehicle Stats"
-                     ></div>
 
             </div>
 </body>

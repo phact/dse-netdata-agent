@@ -27,3 +27,6 @@ init_config:
             - .*index=.*
         name:
           - IndexPool
+    - include:
+        domain: org.apache.cassandra.db
+        type: CompactionManager
