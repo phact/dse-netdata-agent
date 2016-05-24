@@ -24,7 +24,7 @@ metrics in a netdata compatible format
 ###Install netdata:
 dependencies
 
-    sudo apt-get install zlib1g-dev gcc make git autoconf autogen automake pkg-config
+    sudo apt-get install zlib1g-dev gcc make git autoconf autogen automake pkg-config uuid-dev
 
 download it - the directory 'netdata.git' will be created 
 
